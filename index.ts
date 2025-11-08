@@ -1,11 +1,13 @@
 import { Command } from 'commander';
-import { nfzf } from "node-fzf";
 import { getUserId, getAvatarItems, idsToCommand } from "./modules/steal.ts";
-import { writeToCache, checkCache, getCache } from "./modules/database.ts";
+import { writeToCache, checkCache, getCache, clearCache } from "./modules/database.ts";
+import { printTable } from 'console-table-printer';
+import wordwrap from 'wordwrapjs'
 import noblox from "noblox.js"
 
 const program = new Command();
 
+const cooldown: number = 16
 // Gets a random hex color.
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
@@ -55,6 +57,7 @@ program
       console.log(result.join(""));
 
       if (options.cache) {
+        console.log(`${Bun.color("green", "ansi")} * Caching user.\u001b[0m`);
         const username = useId ? await noblox.getUsernameFromId(idToUse) : nameOrId;
         await writeToCache(username, idToUse, command);
       }
@@ -63,7 +66,6 @@ program
     }
   });
 
-const cooldown: number = 16
 program
   .command('update-cache')
   .description('Update stolen avatar cache')
@@ -90,8 +92,16 @@ program
 program
   .command('list-cache')
   .description('List stolen avatar cache')
-  .action((options) => {
+  .action(() => {
     console.log(getCache());
+  });
+
+program
+  .command('clear-cache')
+  .description('Clear all cache')
+  .action(() => {
+    clearCache()
+    console.log("All cache cleared");
   });
 
 program.parse();

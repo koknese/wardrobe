@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 
 /*
 Caching and saving system
-There will be 2 databases, one for custom avatars, the other one for stolen avatar cache
+There will be 2 tables, one for custom avatars, the other one for stolen avatar cache
 
 Stealing note:
 By default the app will use the roblox servers for getting avatars instead of the cache.
@@ -72,6 +72,14 @@ export function getCache() {
     SELECT * FROM cache;
   `);
   return query.all();
+}
+
+export function clearCache() {
+  using db = new Database("data.sqlite");
+  using query = db.query(`
+    DELETE FROM cache;
+  `);
+  return query.run();
 }
 
 // This will get all avatars contents in a JSON format.
