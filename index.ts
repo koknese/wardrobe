@@ -41,7 +41,7 @@ program
           console.log(Bun.color("white", "ansi"));
           // Stole this from SO and modified it to do what i want but seems really smart.
           // Will color every 200th character so that you know where to start copying from, considering 200 is the roblox chat char limit.
-          const result = [...cachedResult.command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi"))
+          const result = [...cachedResult.command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi")+l)
           console.log(result.join(""));
           return;
         } else {
@@ -53,7 +53,7 @@ program
       const avatarItems = await getAvatarItems(idToUse);
       const command = idsToCommand(avatarItems).join("|");
       console.log(Bun.color("white", "ansi"));
-      const result = [...command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi"))
+      const result = [...command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi")+l)
       console.log(result.join(""));
 
       if (options.cache) {
