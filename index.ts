@@ -1,13 +1,11 @@
 import { Command } from 'commander';
 import { getUserId, getAvatarItems, idsToCommand } from "./modules/steal.ts";
 import { writeToCache, checkCache, getCache, clearCache } from "./modules/database.ts";
-import { printTable } from 'console-table-printer';
-import wordwrap from 'wordwrapjs'
 import noblox from "noblox.js"
 
 const program = new Command();
-
 const cooldown: number = 16
+
 // Gets a random hex color.
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
