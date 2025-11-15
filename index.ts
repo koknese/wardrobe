@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { getUserId, getAvatarItems, idsToCommand } from "./modules/steal.ts";
 import { writeToCache, checkCache, getCache, clearCache } from "./modules/database.ts";
 import noblox from "noblox.js"
+import clipboard from 'clipboardy';
 
 const program = new Command();
 const cooldown: number = 16
@@ -27,6 +28,7 @@ program
   .option("-c --cache", "Caches the avatar of a player")
   .option("-C --cached", "Prioritizes cached outfits instead of those from Roblox. Significantly decreases stealing time when enough avatars are cached.")
   .option("-i --id", "Get avatar items using Roblox ID")
+  .option("-s --clipboard", "Save command to clipboard")
   .action(async (nameOrId, options) => {
     try {
       const useId = options.id;
@@ -37,6 +39,8 @@ program
         if (cachedResult) {
           console.log(`${Bun.color("green", "ansi")} * Cache was used!\u001b[0m`);
           console.log(Bun.color("white", "ansi"));
+          // Saves to clipboard if -s is defined
+          if (options.clipboard) {clipboard.writeSync(cachedResult.command);}
           // Stole this from SO and modified it to do what i want but seems really smart.
           // Will color every 200th character so that you know where to start copying from, considering 200 is the roblox chat char limit.
           const result = [...cachedResult.command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi")+l)
@@ -50,10 +54,11 @@ program
       console.log(`${Bun.color("green", "ansi")} * Calling Roblox...`);
       const avatarItems = await getAvatarItems(idToUse);
       const command = idsToCommand(avatarItems).join("|");
+      // Saves to clipboard if -s is defined
+      if (options.clipboard) {clipboard.writeSync(command);}
       console.log(Bun.color("white", "ansi"));
       const result = [...command].map((l,i) => (i + 1) % 200 ? l : Bun.color(getRandomColor(),"ansi")+l)
       console.log(result.join(""));
-
       if (options.cache) {
         console.log(`${Bun.color("green", "ansi")} * Caching user.\u001b[0m`);
         const username = useId ? await noblox.getUsernameFromId(idToUse) : nameOrId;
