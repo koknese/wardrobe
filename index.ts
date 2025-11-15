@@ -20,7 +20,7 @@ function getRandomColor() {
 program
   .name('wardrobe')
   .description('An outfit manager for Roblox Adonis')
-  .version('1.0.0');
+  .version('1.1.0');
 
 program
   .command('steal <nameOrId>')
