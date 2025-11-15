@@ -1,5 +1,7 @@
 import { Database } from "bun:sqlite";
+const path = require('path');
 
+const dbLocation:any = path.join(__dirname, '/data.sqlite');
 /*
 Caching and saving system
 There will be 2 tables, one for custom avatars, the other one for stolen avatar cache
@@ -11,7 +13,7 @@ Will probably add a flag to prioritise using the cache instead of Roblox servers
 
 // Will run only if the cache table does not exist.
 function createCache() {
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     CREATE TABLE IF NOT EXISTS cache(
       id INT UNIQUE,
@@ -23,7 +25,7 @@ function createCache() {
 
 // Creates (if doesnt exist) the place where commands for various outfits will be kept
 function createAvatars() {
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     CREATE TABLE IF NOT EXISTS avatars(
       name TEXT NOT NULL,
@@ -44,7 +46,7 @@ export async function updateCache() {
 // Writes an avatar cache item if doesnt exists, updates an existant one if a record exists.
 export function writeToCache(username:string, id:number, command:string) {
   createCache()
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     INSERT INTO cache(id, name, command) 
     VALUES ($id, $name, $command)
@@ -56,7 +58,7 @@ export function writeToCache(username:string, id:number, command:string) {
 // Writes an avatar item if doesnt exists, updates an existant one if a record exists.
 export function writeAvatarItem(name: string, username:string, command:string) {
   createAvatars()
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     INSERT INTO cache(id, name, command) 
     VALUES ($id, $name, $command)
@@ -67,7 +69,7 @@ export function writeAvatarItem(name: string, username:string, command:string) {
 
 // This will get all cache contents in a JSON format.
 export function getCache() {
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     SELECT * FROM cache;
   `);
@@ -75,7 +77,7 @@ export function getCache() {
 }
 
 export function clearCache() {
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     DELETE FROM cache;
   `);
@@ -84,7 +86,7 @@ export function clearCache() {
 
 // This will get all avatars contents in a JSON format.
 export function getAvatars() {
-  using db = new Database("data.sqlite");
+  using db = new Database(dbLocation);
   using query = db.query(`
     SELECT * FROM avatars;
   `);
@@ -93,7 +95,8 @@ export function getAvatars() {
 
 // Checks if a user is cached by ID. If user is cached, returns the object. Otherwise returns null.
 export async function checkCache(id:number) {
-  using db = new Database("data.sqlite");
+  createCache()
+  using db = new Database(dbLocation);
   using query = db.query(`
     SELECT * FROM cache WHERE id=$id;
   `);

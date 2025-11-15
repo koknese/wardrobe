@@ -10,7 +10,9 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/wordwrapjs": "^5.1.2",
     "commander": "^14.0.2",
-    "noblox.js": "^6.2.0"
+    "noblox.js": "^6.2.0",
+    "wordwrapjs": "^5.1.1"
   }
 }
